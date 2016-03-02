@@ -1,8 +1,5 @@
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import java.nio.file.Files;
+import java.io.*;
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -12,10 +9,12 @@ public class Main
 {
     public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException
     {
+        String enc = AES.encrypt("My Text", "1234_Admin_Leo");
+        System.out.println(enc);
 
+        String dec = AES.decrypt(enc, "1234_Admin_Leo");
+        System.out.println(dec);
     }
 
-    private static void encrypt() {
 
-    }
 }

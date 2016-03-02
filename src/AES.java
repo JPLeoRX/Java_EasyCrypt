@@ -24,8 +24,8 @@ import javax.crypto.spec.*;
  * {@link #encrypt} and {@link #decrypt}, which encrypt and decrypt arbitrary
  * streams of data, respectively.
  */
-public class AES {
-
+public abstract class AES
+{
     // AES specification - changing will break existing encrypted streams!
     private static final String CIPHER_SPEC = "AES/CBC/PKCS5Padding";
 
@@ -40,7 +40,7 @@ public class AES {
 
 
     /**
-     * @return a new pseudorandom salt of the specified length
+     * @return a new pseudo-random salt of the specified length
      */
     private static byte[] generateSalt(int length) {
         Random r = new SecureRandom();
@@ -52,12 +52,9 @@ public class AES {
     /**
      * Derive an AES encryption key and authentication key from given password and salt,
      * using PBKDF2 key stretching. The authentication key is 64 bits long.
-     * @param keyLength
-     *   length of the AES key in bits (128, 192, or 256)
-     * @param password
-     *   the password from which to derive the keys
-     * @param salt
-     *   the salt from which to derive the keys
+     * @param keyLength             length of the AES key in bits (128, 192, or 256)
+     * @param password              the password from which to derive the keys
+     * @param salt                  the salt from which to derive the keys
      * @return a Keys object containing the two generated keys
      */
     private static Keys keygen(int keyLength, char[] password, byte[] salt) {
@@ -79,6 +76,51 @@ public class AES {
         return new Keys(encKey, authKey);
     }
 
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
+    /**
+     * Encrypt a string using a password
+     * @param text data to encrypt
+     * @param password encryption password
+     * @return an encrypted data
+     */
+    public static String encrypt(String text, String password) {
+        ByteArrayOutputStream outputStream; String result = null;
+
+        try {
+            outputStream = new ByteArrayOutputStream();
+            AES.encrypt(256, password.toCharArray(), org.apache.commons.io.IOUtils.toInputStream(text), outputStream);
+            result = outputStream.toString();
+        }
+
+        catch (Exception e) { e.printStackTrace(); }
+
+        return result;
+    }
+
+    /**
+     * Decrypt a string using a password
+     * @param encryptedText data to decrypt
+     * @param password decryption password
+     * @return a decrypted data
+     */
+    public static String decrypt(String encryptedText, String password) {
+        ByteArrayOutputStream outputStream; String result = null;
+
+        try {
+            outputStream = new ByteArrayOutputStream();
+            AES.decrypt(password.toCharArray(), org.apache.commons.io.IOUtils.toInputStream(encryptedText), outputStream);
+            result = outputStream.toString("UTF-8");
+        }
+
+        catch (Exception e) { e.printStackTrace(); }
+
+        return result;
+    }
+
     /**
      * Encrypts a stream of data. The encrypted stream consists of a header
      * followed by the raw AES data. The header is broken down as follows:<br/>
@@ -90,19 +132,13 @@ public class AES {
      *   <li><b>IV</b>: pseudorandom AES initialization vector (16 bytes)</li>
      * </ul>
      *
-     * @param keyLength
-     *   key length to use for AES encryption (must be 128, 192, or 256)
-     * @param password
-     *   password to use for encryption
-     * @param input
-     *   an arbitrary byte stream to encrypt
-     * @param output
-     *   stream to which encrypted data will be written
-     * @throws AES.InvalidKeyLengthException
-     *   if keyLength is not 128, 192, or 256
-     * @throws AES.StrongEncryptionNotAvailableException
-     *   if keyLength is 192 or 256, but the Java runtime's jurisdiction
-     *   policy files do not allow 192- or 256-bit encryption
+     * @param keyLength                                     key length to use for AES encryption (must be 128, 192, or 256)
+     * @param password                                      password to use for encryption
+     * @param input                                         an arbitrary byte stream to encrypt
+     * @param output                                        stream to which encrypted data will be written
+     *
+     * @throws AES.InvalidKeyLengthException                if keyLength is not 128, 192, or 256
+     * @throws AES.StrongEncryptionNotAvailableException    if keyLength is 192 or 256, but the Java runtime's jurisdiction policy files do not allow 192- or 256-bit encryption
      * @throws IOException
      */
     public static void encrypt(int keyLength, char[] password, InputStream input, OutputStream output) throws InvalidKeyLengthException, StrongEncryptionNotAvailableException, IOException {
