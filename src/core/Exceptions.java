@@ -1,4 +1,4 @@
-package wrappers;
+package core;
 
 /**
  * Exceptions used in AES encryption/decryption process
