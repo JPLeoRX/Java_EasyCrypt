@@ -47,7 +47,7 @@ public abstract class AES_Core
     //------------------------------------------------------------------------------------------------------------------
     /**
      * Encrypts a stream of data. The encrypted stream consists of a header followed by the raw AES data.
-     * @param keyLen                                             key length to use for AES encryption (must be 128, 192, or 256)
+     * @param keyLen                                                key length to use for AES encryption (must be 128, 192, or 256)
      * @param pass                                                  password to use for encryption
      * @param in                                                    an arbitrary byte stream to encrypt
      * @param out                                                   stream to which encrypted data will be written

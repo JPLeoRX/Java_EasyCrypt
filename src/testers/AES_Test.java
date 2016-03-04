@@ -24,7 +24,7 @@ public class AES_Test
             PASS_LENGTH = new SecureRandom().nextInt(1000);                                                             // New random pass length
             String text = RandomString.next(TEXT_LENGTH);                                                               // New text
             String pass = RandomString.next(PASS_LENGTH);                                                               // New pass
-            String enc = AES_Wrappers.encrypt(text, pass);                                                              // Encrypted string
+            String enc = AES_Wrappers.encrypt_256(text, pass);                                                          // Encrypted string
             String dec = AES_Wrappers.decrypt(enc, pass);                                                               // Decrypted string
             Assert.assertEquals(text, dec);                                                                             // Make comparison
             System.out.println("N" + i + "\n\t org str: " + text +  "\n\t enc str: " + enc + "\n\t dec str: " + dec);   // Output results
